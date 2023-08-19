@@ -1,1 +1,1 @@
-softmpu /mpu:330 /output=mfc
+softmpu /mpu:330 /output:mfc

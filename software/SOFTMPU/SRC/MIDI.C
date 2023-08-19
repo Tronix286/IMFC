@@ -284,8 +284,8 @@ struct GM_to_mfc_t GM_to_mfc[128] = {
 {5, 10},//63.	SynthBrass 1		-> 5/10:HardBrass2
 {5, 11},//64.	SynthBrass 2		-> 5/11:HardBrass3
 // Reed
-{5, 48},//65.	Soprano Sax		-> 5/48:Sax 2
-{5, 47},//66.	Alto Sax		-> 5/47:Sax 1
+{5, 47},//65.	Soprano Sax		-> 5/47:Sax 1
+{5, 48},//66.	Alto Sax		-> 5/48:Sax 2
 {5, 47},//67.	Tenor Sax		-> 5/47:Sax 1
 {5, 48},//68.	Baritone Sax            -> 5/48:Sax 2
 {3, 18},//69.	Oboe			-> 3/18:Oboe
@@ -370,8 +370,8 @@ struct GMdrum_to_mfc_t
 // h = 79; j = 84; k = 91; l = 96; ; = 103
 // ' = 108
 struct GMdrum_to_mfc_t GMdrum_to_mfc[] = {
-{42, 48}, 	// 35 Acoustic Bass Drum
-{42, 55},       // 36 Bass Drum 1
+{41, 60}, 	// 35 Acoustic Bass Drum
+{42, 67},       // 36 Bass Drum 1
 {45, 108},	// 37 Side Stick
 {47, 55},	// 38 Acoustic Snare
 {46, 96},	// 39 Hand Clap
@@ -386,9 +386,8 @@ struct GMdrum_to_mfc_t GMdrum_to_mfc[] = {
 {42, 72},	// 48 Hi-Mid Tom
 {43, 72}, 	// 49 Crash Cymbal 1
 {42, 79},	// 50 High Tom
-
-{47, 120},	// 51 Ride Cymbal 1
-{46, 103},	// 52 Chinese Cymbal
+{47, 72},	// 51 Ride Cymbal 1
+{46, 79},	// 52 Chinese Cymbal
 {36, 103},	// 53 Ride Bell
 {46, 103},	// 54 Tambourine
 {46, 72},	// 55 Splash Cymbal
@@ -398,26 +397,26 @@ struct GMdrum_to_mfc_t GMdrum_to_mfc[] = {
 {45, 108},	// 59 Ride Cymbal 2
 {41, 67},	// 60 Hi Bongo
 {41, 72},	// 61 Low Bongo
-{41, 96},	// 62 Mute Hi Conga
-{41, 103},	// 63 Open Hi Conga
-{41, 108},	// 64 Low Conga
-{45, 80},	// 65 High Timbale
-{45, 100},	// 66 Low Timbale
-{45, 20},	// 67 High Agogo
-{45, 40},	// 68 Low Agogo
-{46, 120},	// 69 Cabasa
-{46, 120},	// 70 Maracas
-{33, 120},	// 71 Short Whistle
-{33, 100},	// 72 Long Whistle
-{47, 100},	// 73 Short Guiro
-{47, 100},	// 74 Long Guiro
-{47, 120},	// 75 Claves
-{44, 100},	// 76 Hi Wood Block
-{32, 100},	// 77 Low Wood Block
-{46, 120},	// 78 Mute Cuica
-{46, 120},	// 79 Open Cuica
-{34, 100},	// 80 Mute Triangle
-{35, 100}	// 81 Open Triangle
+{41, 84},	// 62 Mute Hi Conga
+{41, 79},	// 63 Open Hi Conga
+{41, 72},	// 64 Low Conga
+{45, 79},	// 65 High Timbale
+{45, 84},	// 66 Low Timbale
+{35, 91},	// 67 High Agogo
+{35, 84},	// 68 Low Agogo
+{46, 108},	// 69 Cabasa
+{46, 103},	// 70 Maracas
+{32, 108},	// 71 Short Whistle
+{33, 103},	// 72 Long Whistle
+{47, 91},	// 73 Short Guiro
+{47, 84},	// 74 Long Guiro
+{47, 108},	// 75 Claves
+{32, 91},	// 76 Hi Wood Block
+{32, 84},	// 77 Low Wood Block
+{46, 108},	// 78 Mute Cuica
+{46, 103},	// 79 Open Cuica
+{34, 96},	// 80 Mute Triangle
+{35, 96}	// 81 Open Triangle
 };
 
 int            base, lastdata, piu0, piu1, piu2, pcr, tcr;
