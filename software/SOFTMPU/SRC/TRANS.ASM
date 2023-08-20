@@ -458,18 +458,23 @@ Init:           ; Ensure ds=cs
 @@MFCOk:
 		mov             bx,es:MFCPortAddr
 		mov             ax,bx
-		shr             ax,8
+		shr             ax,12
 		call            NumToChar
 		mov             MFCPortNum,al
 		mov             ax,bx
-		shr             ax,4
+		shr             ax,8
 		and             al,0Fh
 		call            NumToChar
 		mov             MFCPortNum+1,al
 		mov             ax,bx
+		shr             ax,4
 		and             al,0Fh
 		call            NumToChar
 		mov             MFCPortNum+2,al
+		mov             ax,bx
+		and             al,0Fh
+		call            NumToChar
+		mov             MFCPortNum+3,al
 
 		mov             ah,9
 		mov             dx,OFFSET MFCSuccessStart

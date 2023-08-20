@@ -48,7 +48,7 @@ LoadedError     DB              '! Error: SoftMPU is already loaded',0Dh,0Ah,'$'
 MFCError        DB              '! Error: MFC not detected',0Dh,0Ah,'$'
 MFCSuccessStart DB              0FBh,' MFC detected at port ','$'
 MFCSuccessEnd   DB              0Dh,0Ah,'$'
-MFCPortNum      DB              '   ','$'
+MFCPortNum      DB              '    ','$'
 
 SBErrorStart    DB              '! Error: Sound Blaster not detected at port ','$'
 SBErrorMid      DB              ' IRQ ','$'
