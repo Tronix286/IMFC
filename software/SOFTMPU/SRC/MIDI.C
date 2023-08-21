@@ -667,39 +667,26 @@ void mfc_init(void)
        Ainit_UntrappedOUT:
                         out     dx,al
 	}
+
+      mfc_setcmd();		// Select Configuration = 17 (mono)
+      mfc_putbyte(0x1e3);  mfc_putbyte(0);  mfc_putbyte(0);
+      mfc_putbyte(0x11);   mfc_putbyte(0);  mfc_putbyte(127);
+      mfc_putbyte(0);      mfc_putbyte(0);  mfc_putbyte(0);
+      mfc_waitbyte(0x1e3);
+      mfc_setdata();
+
       mfc_setpath(0x1f, 0x1f, 0x1f, 0x1f, 0x1f);
 }
 
-void mfc_setbank(int bank)
+void mfc_setchanvoice(int chan, int voice)
 {
-  int i;
-  for (i = 0; i < 15; i++) {
-	mfc_putbyte(0xf0);	// set max voices for each channel
-	mfc_putbyte(0x43);
-	mfc_putbyte(0x10 | i);
-	mfc_putbyte(0x15);
-	mfc_putbyte(0x00);
-	mfc_putbyte(0x01);	// notes =1
-	mfc_putbyte(0xf7);
-
-	if (i == 7) {
 	mfc_putbyte(0xf0);	// set midi channel for drum (10)
 	mfc_putbyte(0x43);
-	mfc_putbyte(0x10 | i);
+	mfc_putbyte(0x10 | chan);
 	mfc_putbyte(0x15);
 	mfc_putbyte(0x01);
-	mfc_putbyte(0x9);	// channel 10 (9)
+	mfc_putbyte(voice);	// channel 10 (9)
 	mfc_putbyte(0xf7);
-	}
-
-	mfc_putbyte(0xf0);	// set bank for each channel
-	mfc_putbyte(0x43);
-	mfc_putbyte(0x10 | i);
-	mfc_putbyte(0x15);
-	mfc_putbyte(0x04);
-	mfc_putbyte(bank);
-	mfc_putbyte(0xf7);
-  }
 }
 
 void mfc_setchanbank(int chan, int bank)
@@ -710,6 +697,17 @@ void mfc_setchanbank(int chan, int bank)
 	mfc_putbyte(0x15);
 	mfc_putbyte(0x04);
 	mfc_putbyte(bank);
+	mfc_putbyte(0xf7);
+}
+
+void mfc_setchanpitch(int chan, int pitch)
+{
+	mfc_putbyte(0xf0);	// set bank for each channel
+	mfc_putbyte(0x43);
+	mfc_putbyte(0x10 | chan);
+	mfc_putbyte(0x15);
+	mfc_putbyte(0x0c);
+	mfc_putbyte(pitch);
 	mfc_putbyte(0xf7);
 }
 
@@ -1144,7 +1142,9 @@ void MIDI_Init(Bitu mpuport,Bitu sbport,Bitu serialport,OutputMode outputmode,bo
         }
 
 	mfc_init();
-	mfc_setbank(5);
+	mfc_setchanbank(7,5);	// set bank=5 (percussions) to channel 7
+	//mfc_setchanpitch(7,2);	// set pitchlevel 2 to channel 7
+	mfc_setchanvoice(7,9);	// set channel 7 exclusive to MIDI chan 9 (GM DRUM)
 }
 
 /* DOSBox initialisation code */
