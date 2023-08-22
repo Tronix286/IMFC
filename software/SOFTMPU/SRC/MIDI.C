@@ -436,11 +436,9 @@ int mfc_getbyte(void)
 			mov dx,piu2
         	        cmp     qemm.installed,1
                         jne     Agetbyte_UntrappedIN
-			push	bx
                         mov     ax,01A00h               ; QPI_UntrappedIORead
                         call    qemm.qpi_entry
 			mov	al,bl
-			pop	bx
                         _emit   0A8h                    ; Emit test al,(next opcode byte)
                                                         ; Effectively skips next instruction
         Agetbyte_UntrappedIN:
@@ -455,11 +453,9 @@ int mfc_getbyte(void)
 			mov dx,piu2
         	        cmp     qemm.installed,1
                         jne     AAgetbyte_UntrappedIN
-			push	bx
                         mov     ax,01A00h               ; QPI_UntrappedIORead
                         call    qemm.qpi_entry
 			mov	al,bl
-			pop	bx
                         _emit   0A8h                    ; Emit test al,(next opcode byte)
                                                         ; Effectively skips next instruction
         AAgetbyte_UntrappedIN:
@@ -477,11 +473,9 @@ int mfc_getbyte(void)
 			mov dx,piu0
         	        cmp     qemm.installed,1
                         jne     AAAgetbyte_UntrappedIN
-			push	bx
                         mov     ax,01A00h               ; QPI_UntrappedIORead
                         call    qemm.qpi_entry
 			mov	al,bl
-			pop	bx
                         _emit   0A8h                    ; Emit test al,(next opcode byte)
                                                         ; Effectively skips next instruction
         AAAgetbyte_UntrappedIN:
@@ -498,61 +492,33 @@ int mfc_getbyte(void)
 
 void mfc_putbyte(int x)
 {
-    unsigned int timer;
-    unsigned char stat;
-
-    timer = 0;
-    //stat = inp(piu2);              /* Check status */
     _asm
 	{
-			mov dx,piu2
+			mov 	dx,piu2
+			xor 	cx,cx	; retry cntr
+	WaitTXRdy:
         	        cmp     qemm.installed,1
                         jne     A_UntrappedIN
-			push	bx
                         mov     ax,01A00h               ; QPI_UntrappedIORead
                         call    qemm.qpi_entry
 			mov	al,bl
-			pop	bx
                         _emit   0A8h                    ; Emit test al,(next opcode byte)
                                                         ; Effectively skips next instruction
         A_UntrappedIN:
                         in      al,dx
-			mov stat,al
-	}
-    if ((stat & txrdy) == 0) {         /* Not ready - wait */
-      while (((stat & txrdy) == 0) & (timer < 500l)) {
-	 //stat = inp(piu2);
-    _asm
-	{
-			mov dx,piu2
-        	        cmp     qemm.installed,1
-                        jne     AA_UntrappedIN
-			push	bx
-                        mov     ax,01A00h               ; QPI_UntrappedIORead
-                        call    qemm.qpi_entry
-			mov	al,bl
-			pop	bx
-                        _emit   0A8h                    ; Emit test al,(next opcode byte)
-                                                        ; Effectively skips next instruction
-        AA_UntrappedIN:
-                        in      al,dx
-			mov stat,al
-	}
-	 timer++;
-      }
-    }
-    //outp(piu1, (x & 0xff));
-    _asm
-	{	
-			mov dx,piu1
-			mov al,byte ptr x
+			test 	al,2
+			jnz 	OkTxByte
+			inc 	cx
+			cmp 	cx,500
+			jb 	WaitTXRdy
+	OkTxByte:
+			mov 	dx,piu1
+			mov 	al,byte ptr x
                         cmp     qemm.installed,1
                         jne     A_UntrappedOUT
-			push 	bx
                         mov     bl,al                   ; bl = value
                         mov     ax,01A01h               ; QPI_UntrappedIOWrite
                         call    qemm.qpi_entry
-			pop	bx
                         _emit   0A8h                    ; Emit test al,(next opcode byte)
                                                         ; Effectively skips next instruction
        A_UntrappedOUT:
@@ -571,11 +537,9 @@ void mfc_setcmd(void)
 			mov al,ext8
                         cmp     qemm.installed,1
                         jne     Asetcmd_UntrappedOUT
-			push 	bx
                         mov     bl,al                   ; bl = value
                         mov     ax,01A01h               ; QPI_UntrappedIOWrite
                         call    qemm.qpi_entry
-			pop	bx
                         _emit   0A8h                    ; Emit test al,(next opcode byte)
                                                         ; Effectively skips next instruction
        Asetcmd_UntrappedOUT:
@@ -594,11 +558,9 @@ void mfc_setdata(void)
 			xor al,al
                         cmp     qemm.installed,1
                         jne     Asetdata_UntrappedOUT
-			push 	bx
                         mov     bl,al                   ; bl = value
                         mov     ax,01A01h               ; QPI_UntrappedIOWrite
                         call    qemm.qpi_entry
-			pop	bx
                         _emit   0A8h                    ; Emit test al,(next opcode byte)
                                                         ; Effectively skips next instruction
        Asetdata_UntrappedOUT:
