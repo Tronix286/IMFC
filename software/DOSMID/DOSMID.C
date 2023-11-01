@@ -95,7 +95,7 @@ struct clioptions {
 };
 
 
-unsigned char mfc_bank = 5;
+unsigned char mfc_bank = 0; //5
 
 /* fetch directory where the program resides, and return its length. result
  * string is never longer than 128 (incl. the null terminator), and it is
@@ -295,7 +295,8 @@ static char *devtoname(enum outdev_types device, int devicesubtype) {
       return("COM");
     case DEV_SBMIDI: return("SB");
     case DEV_GUS:    return("GUS");
-    case DEV_MFC:    return("MFC");
+    case DEV_MFC:    return("MFC+");
+    case DEV_MFC_CLEAN: return("MFC");
     default:         return("UNK");
   }
 }
@@ -539,6 +540,11 @@ static char *parseargv(int argc, char **argv, struct clioptions *params) {
   if ((params->midifile == NULL) && (params->playlist == NULL)) {
     return("You have to provide the path to a MIDI file or a playlist to play.$");
   }
+
+  // if MFC and SYX then change device to DEV_MFC_CLEAN
+  if ((params->device == DEV_MFC) && (params->syxrst != NULL))
+	 params->device = DEV_MFC_CLEAN;
+
   /* all good */
   return(NULL);
 }
@@ -1123,6 +1129,7 @@ static enum playactions playfile(struct clioptions *params, struct trackinfodata
   if (params->syxrst != NULL) {
     int syxlen;
     struct fiofile_t syxfh;
+
 #ifdef DBGFILE
   if (params->logfd != NULL) fprintf(params->logfd, "loading SYSEX file %s\n", params->syxrst);
 #endif

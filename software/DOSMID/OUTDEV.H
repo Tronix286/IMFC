@@ -40,7 +40,8 @@ enum outdev_types {
   DEV_RS232,
   DEV_SBMIDI,
   DEV_GUS,
-  DEV_MFC
+  DEV_MFC,
+  DEV_MFC_CLEAN
 };
 
 

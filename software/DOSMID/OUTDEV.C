@@ -499,7 +499,11 @@ char *dev_init(enum outdev_types dev, unsigned short port, char *sbank) {
       break;
     case DEV_MFC:
 	mfc_init();
-	mfc_setbank(mfc_bank);
+	mfc_setbank(mfc_bank,1);
+      break;
+    case DEV_MFC_CLEAN:
+	mfc_init();
+	mfc_setbank(mfc_bank,0);
       break;
 
   }
@@ -519,6 +523,7 @@ void dev_preloadpatch(enum outdev_types dev, int p) {
     case DEV_RS232:
     case DEV_SBMIDI:
     case DEV_MFC:
+    case DEV_MFC_CLEAN:
       break;
     case DEV_GUS:
       gus_loadpatch(p);
@@ -577,6 +582,7 @@ void dev_close(void) {
       gus_close();
       break;
     case DEV_MFC:
+    case DEV_MFC_CLEAN:
 	mfc_init();
       break;
     case DEV_NONE:
@@ -602,6 +608,7 @@ void dev_clear(void) {
     case DEV_RS232:
     case DEV_SBMIDI:
     case DEV_MFC:
+    case DEV_MFC_CLEAN:
       break;
     case DEV_OPL:
     case DEV_OPL2:
@@ -635,6 +642,11 @@ void dev_noteon(int channel, int note, int velocity) {
       mpu401_waitwrite(outport);      /* Wait for port ready */
       outp(outport, velocity);        /* Send velocity */
       break;
+    case DEV_MFC_CLEAN:
+    	  mfc_putbyte(0x90 | channel);
+    	  mfc_putbyte(note);
+    	  mfc_putbyte(velocity);
+	  break;
     case DEV_MFC:
 	if (channel == 9)
 	{
@@ -706,6 +718,11 @@ void dev_noteoff(int channel, int note) {
       mpu401_waitwrite(outport);      /* Wait for port ready */
       outp(outport, 64);              /* Send velocity */
       break;
+    case DEV_MFC_CLEAN:
+    	  mfc_putbyte(0x80 | channel);
+    	  mfc_putbyte(note);
+    	  mfc_putbyte(64);
+	  break;
     case DEV_MFC:
 	if (channel == 9)
 	{
@@ -770,6 +787,7 @@ void dev_pitchwheel(int channel, int wheelvalue) {
       mpu401_waitwrite(outport);      /* Wait for port ready */
       outp(outport, wheelvalue >> 7); /* Send the highest (most significant) 7 bits of the wheel value */
       break;
+    case DEV_MFC_CLEAN:
     case DEV_MFC:
     	mfc_putbyte(0xE0 | channel);
     	mfc_putbyte(wheelvalue & 127);
@@ -822,6 +840,7 @@ void dev_controller(int channel, int id, int val) {
       mpu401_waitwrite(outport);      /* Wait for port ready */
       outp(outport, val);             /* Send controller's value */
       break;
+    case DEV_MFC_CLEAN:
     case DEV_MFC:
     	mfc_putbyte(0xB0 | channel);
     	mfc_putbyte(id);
@@ -871,6 +890,7 @@ void dev_chanpressure(int channel, int pressure) {
       mpu401_waitwrite(outport);      /* Wait for port ready */
       outp(outport, pressure);        /* Send the pressure value */
       break;
+    case DEV_MFC_CLEAN:
     case DEV_MFC:
     	mfc_putbyte(0xD0 | channel);
     	mfc_putbyte(pressure);
@@ -992,6 +1012,11 @@ void dev_setprog(int channel, int program) {
       mpu401_waitwrite(outport);     /* Wait for port ready */
       outp(outport, program);        /* Send patch id */
       break;
+    case DEV_MFC_CLEAN:
+    	  mfc_putbyte(0xC0 | channel);
+    	  mfc_putbyte(program);
+	  break;
+
     case DEV_MFC:
 	if (channel != 9) {	// dont touch ch9, its bank 5 percussion by default
 	  mfc_setchanbank(channel,GM_to_mfc[program].bank-1);
@@ -1044,6 +1069,7 @@ void dev_sysex(int channel, unsigned char *buff, int bufflen) {
         outp(outport, buff[x]);        /* Send sysex data byte */
       }
       break;
+    case DEV_MFC_CLEAN:
     case DEV_MFC:
       for (x = 0; x < bufflen; x++) {
     	mfc_putbyte(buff[x]);

@@ -10,7 +10,7 @@ void mfc_setcmd(void);
 void mfc_setdata(void);
 void mfc_setpath(int p1, int p2, int p3, int p4, int p5);
 void mfc_waitbyte(int data);
-void mfc_setbank(int bank);
+void mfc_setbank(int bank, int drum);
 void mfc_setchanbank(int chan, int bank);
 
 

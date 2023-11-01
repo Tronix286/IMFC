@@ -83,6 +83,14 @@ void mfc_init(void)
       printf("Music Feature Card not present\n");
     else {
       outp(pcr, 0xbc);
+
+      mfc_setcmd();		// Select Configuration = 17 (mono)
+      mfc_putbyte(0x1e3);  mfc_putbyte(0);  mfc_putbyte(0);
+      mfc_putbyte(0x11);   mfc_putbyte(0);  mfc_putbyte(127);
+      mfc_putbyte(0);      mfc_putbyte(0);  mfc_putbyte(0);
+      mfc_waitbyte(0x1e3);
+      mfc_setdata();
+
       mfc_setpath(0x1f, 0x1f, 0x1f, 0x1f, 0x1f);
     }
 }
@@ -151,10 +159,11 @@ void mfc_setpath(int p1, int p2, int p3, int p4, int p5)
     mfc_setdata();
 }
 
-void mfc_setbank(int bank)
+void mfc_setbank(int bank, int drum)
 {
   int i;
   for (i = 0; i < 15; i++) {
+/*
 	mfc_putbyte(0xf0);	// set max voices for each channel
 	mfc_putbyte(0x43);
 	mfc_putbyte(0x10 | i);
@@ -162,8 +171,8 @@ void mfc_setbank(int bank)
 	mfc_putbyte(0x00);
 	mfc_putbyte(0x01);	// notes =1
 	mfc_putbyte(0xf7);
-
-	if (i == 7) {
+*/
+	if ((i == 7) && (drum == 1)){
 	mfc_putbyte(0xf0);	// set midi channel for drum (10)
 	mfc_putbyte(0x43);
 	mfc_putbyte(0x10 | i);
